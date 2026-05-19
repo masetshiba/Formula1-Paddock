@@ -9,11 +9,40 @@ import { useEffect, useState } from 'react';
 import { CALENDAR } from '../constants.ts';
 import { fetchUpcomingRaceData } from '../services/raceScheduleService.ts';
 
+const DEFAULT_RACE_START_TIME = '13:00:00Z';
+const MONTH_TO_INDEX: Record<string, string> = {
+  Jan: '01',
+  Feb: '02',
+  Mar: '03',
+  Apr: '04',
+  May: '05',
+  Jun: '06',
+  Jul: '07',
+  Aug: '08',
+  Sep: '09',
+  Oct: '10',
+  Nov: '11',
+  Dec: '12',
+};
+
+function getInitialCountdownTarget() {
+  const nextRace = CALENDAR.find(r => r.isNext) || CALENDAR.find(r => !r.isDone && !r.isCancelled) || CALENDAR[0];
+  const match = nextRace?.date.match(/^([A-Za-z]{3})\s+(\d{1,2})(?:[–-]([A-Za-z]{3})?\s?(\d{1,2}))?$/);
+  if (!match) return new Date(Date.now() + 3600000).toISOString();
+
+  const month = MONTH_TO_INDEX[match[1]];
+  const day = match[2].padStart(2, '0');
+  const year = new Date().getUTCFullYear();
+  if (!month) return new Date(Date.now() + 3600000).toISOString();
+
+  return `${year}-${month}-${day}T${DEFAULT_RACE_START_TIME}`;
+}
+
 export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const [timeLeft, setTimeLeft] = useState({ d: '00', h: '00', m: '00', s: '00' });
   const [nextRace, setNextRace] = useState(CALENDAR.find(r => r.isNext) || CALENDAR[0]);
   const [totalRounds, setTotalRounds] = useState(24);
-  const [countdownTarget, setCountdownTarget] = useState('2026-05-18T13:00:00Z');
+  const [countdownTarget, setCountdownTarget] = useState(() => getInitialCountdownTarget());
   const [scheduleSource, setScheduleSource] = useState<'live' | 'fallback'>('fallback');
 
   useEffect(() => {

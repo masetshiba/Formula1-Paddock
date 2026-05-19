@@ -6,21 +6,61 @@
 import { useState, useEffect } from 'react';
 import { TICKER_ITEMS } from '../constants.ts';
 import { fetchLiveTickerUpdates } from '../services/geminiService.ts';
+import { fetchUpcomingRaceData } from '../services/raceScheduleService.ts';
+
+type TickerItem = { sym: string; val: string; pts: string };
+
+function formatNextRaceDateLabel(dateText: string) {
+  const match = dateText.match(/^([A-Za-z]{3})\s*(\d{1,2})/);
+  if (!match) return dateText.toUpperCase();
+  return `${match[1].toUpperCase()} ${match[2]}`;
+}
+
+function normalizeNextRaceName(country: string) {
+  if (country.toLowerCase() === 'canadian') return 'CANADA';
+  return country.toUpperCase();
+}
 
 export function Ticker({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const defaultItems = theme === 'dark' ? TICKER_ITEMS : [
     { sym: 'WDC', val: 'ANTONELLI ⭐', pts: '72 pts' },
     { sym: 'WCC', val: 'MERCEDES ⭐', pts: '135 pts' },
-    { sym: 'NEXT', val: 'MIAMI GP', pts: 'MAY 3' },
+    { sym: 'NEXT', val: 'CANADA GP', pts: 'JUN 13' },
     { sym: 'WINNER', val: 'ANTONELLI', pts: 'JAPAN' },
     { sym: 'FL', val: 'RUSSELL', pts: '1:28.411' },
     { sym: 'FAST PIT', val: 'MERCEDES', pts: '1.92s' },
     { sym: 'MERC', val: 'DOMINANT', pts: 'FORCE' },
     { sym: 'POWER', val: 'HPP V6', pts: 'E-PERF' },
   ];
-  const [items, setItems] = useState<{ sym: string; val: string; pts: string }[]>(defaultItems);
+  const [items, setItems] = useState<TickerItem[]>(defaultItems);
 
   useEffect(() => {
+    let active = true;
+
+    const applyAccurateNextRace = async (sourceItems: TickerItem[]) => {
+      try {
+        const raceData = await fetchUpcomingRaceData();
+        const nextRaceItem = {
+          sym: 'NEXT',
+          val: `${normalizeNextRaceName(raceData.nextRace.country)} GP`,
+          pts: formatNextRaceDateLabel(raceData.nextRace.date),
+        };
+        const withoutNext = sourceItems.filter(item => item.sym !== 'NEXT');
+        return [nextRaceItem, ...withoutNext];
+      } catch {
+        return sourceItems;
+      }
+    };
+
+    const setItemsWithAccurateNext = async (sourceItems: TickerItem[]) => {
+      const mergedItems = await applyAccurateNextRace(sourceItems);
+      if (active) {
+        setItems(mergedItems);
+      }
+    };
+
+    let initialItems = defaultItems;
+
     // Check for global live sync data first
     const savedSync = localStorage.getItem('f1_live_sync');
     if (savedSync) {
@@ -41,22 +81,20 @@ export function Ticker({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
         }
 
         if (finalItems && finalItems.length > 0) {
-          setItems(finalItems);
-          return;
+          initialItems = finalItems;
         }
       } catch (e) {
         console.error(e);
       }
     }
 
-    // Fallback to theme defaults
-    setItems(defaultItems);
+    setItemsWithAccurateNext(initialItems);
     
     const getLiveTicker = async () => {
       try {
         const liveItems = await fetchLiveTickerUpdates();
         if (liveItems && liveItems.length > 0) {
-          setItems(liveItems);
+          setItemsWithAccurateNext(liveItems);
         }
       } catch (error) {
         console.error(error);
@@ -66,7 +104,10 @@ export function Ticker({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
     
     // Poll every 10 minutes for fresh "live" data to preserve quota
     const interval = setInterval(getLiveTicker, 600000);
-    return () => clearInterval(interval);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, [theme]);
 
   const displayItems = [...items, ...items]; // Duplicate for infinite scroll
