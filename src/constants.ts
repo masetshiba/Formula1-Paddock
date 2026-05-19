@@ -147,10 +147,10 @@ export const CALENDAR: Race[] = [
     strategy: 'M-H · Upgrade Delivers', weather: 'Sunny · 32°C',
     leadingTeam: { name: 'Mercedes-AMG', pts: 152, color: '#27F4D2' }
   },
-  { round: 7, country: 'Emilia-Romagna', flag: '🇮🇹', circuit: 'Imola', date: 'May 16–18', isNext: true, location: 'Autodromo Enzo e Dino Ferrari · Emilia-Romagna', laps: 63, distance: '309.049 km' },
-  { round: 8, country: 'Monaco', flag: '🇲🇨', circuit: 'Monte Carlo', date: 'May 23–25', location: 'Circuit de Monaco · Monte Carlo', laps: 78, distance: '260.286 km' },
-  { round: 9, country: 'Spain', flag: '🇪🇸', circuit: 'Barcelona', date: 'May 30–Jun 01', location: 'Circuit de Barcelona-Catalunya · Montmeló', laps: 66, distance: '307.236 km' },
-  { round: 10, country: 'Canada', flag: '🇨🇦', circuit: 'Montreal', date: 'Jun 13–15', location: 'Circuit Gilles Villeneuve · Montreal', laps: 70, distance: '305.270 km' },
+  { round: 7, country: 'Emilia-Romagna', flag: '🇮🇹', circuit: 'Imola', date: 'May 16–18', isDone: true, location: 'Autodromo Enzo e Dino Ferrari · Emilia-Romagna', laps: 63, distance: '309.049 km' },
+  { round: 8, country: 'Monaco', flag: '🇲🇨', circuit: 'Monte Carlo', date: 'May 23–25', isDone: true, location: 'Circuit de Monaco · Monte Carlo', laps: 78, distance: '260.286 km' },
+  { round: 9, country: 'Spain', flag: '🇪🇸', circuit: 'Barcelona', date: 'May 30–Jun 01', isDone: true, location: 'Circuit de Barcelona-Catalunya · Montmeló', laps: 66, distance: '307.236 km' },
+  { round: 10, country: 'Canada', flag: '🇨🇦', circuit: 'Montreal', date: 'Jun 13–15', isNext: true, location: 'Circuit Gilles Villeneuve · Montreal', laps: 70, distance: '305.270 km' },
   { round: 11, country: 'Austria', flag: '🇦🇹', circuit: 'Spielberg', date: 'Jun 27–29', location: 'Red Bull Ring · Styria', laps: 71, distance: '306.452 km' },
   { round: 12, country: 'UK', flag: '🇬🇧', circuit: 'Silverstone', date: 'Jul 04–06', location: 'Silverstone Circuit · Northamptonshire', laps: 52, distance: '306.198 km' },
   { round: 13, country: 'Belgium', flag: '🇧🇪', circuit: 'Spa-Francorchamps', date: 'Jul 25–27', location: 'Circuit de Spa-Francorchamps · Stavelot', laps: 44, distance: '308.052 km' },
@@ -204,7 +204,7 @@ export const TICKER_ITEMS = [
   { sym: 'WDC', val: 'ANTONELLI ⭐', pts: '84 pts' },
   { sym: 'GAP', val: 'RUSSELL', pts: '-16 pts' },
   { sym: 'WCC', val: 'MERCEDES ⭐', pts: '152 pts' },
-  { sym: 'NEXT', val: 'IMOLA GP', pts: 'MAY 16' },
+  { sym: 'NEXT', val: 'CANADA GP', pts: 'JUN 13' },
   { sym: 'RECORD', val: 'ANTONELLI', pts: '19y LEADER' },
   { sym: 'WIN', val: 'VERSTAPPEN', pts: 'MIAMI WIN' },
 ];

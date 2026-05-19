@@ -11,7 +11,7 @@ export function Ticker({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const defaultItems = theme === 'dark' ? TICKER_ITEMS : [
     { sym: 'WDC', val: 'ANTONELLI ⭐', pts: '72 pts' },
     { sym: 'WCC', val: 'MERCEDES ⭐', pts: '135 pts' },
-    { sym: 'NEXT', val: 'MIAMI GP', pts: 'MAY 3' },
+    { sym: 'NEXT', val: 'CANADA GP', pts: 'JUN 13' },
     { sym: 'WINNER', val: 'ANTONELLI', pts: 'JAPAN' },
     { sym: 'FL', val: 'RUSSELL', pts: '1:28.411' },
     { sym: 'FAST PIT', val: 'MERCEDES', pts: '1.92s' },

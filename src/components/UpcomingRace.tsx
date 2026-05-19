@@ -13,7 +13,7 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const [timeLeft, setTimeLeft] = useState({ d: '00', h: '00', m: '00', s: '00' });
   const [nextRace, setNextRace] = useState(CALENDAR.find(r => r.isNext) || CALENDAR[0]);
   const [totalRounds, setTotalRounds] = useState(24);
-  const [countdownTarget, setCountdownTarget] = useState('2026-05-18T13:00:00Z');
+  const [countdownTarget, setCountdownTarget] = useState('2026-06-13T13:00:00Z');
   const [scheduleSource, setScheduleSource] = useState<'live' | 'fallback'>('fallback');
 
   useEffect(() => {
