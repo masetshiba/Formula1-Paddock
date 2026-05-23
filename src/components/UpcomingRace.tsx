@@ -7,64 +7,15 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import { CALENDAR } from '../constants.ts';
-import { fetchUpcomingRaceData } from '../services/raceScheduleService.ts';
-
-const DEFAULT_RACE_START_TIME = '13:00:00Z';
-const MONTH_TO_INDEX: Record<string, string> = {
-  Jan: '01',
-  Feb: '02',
-  Mar: '03',
-  Apr: '04',
-  May: '05',
-  Jun: '06',
-  Jul: '07',
-  Aug: '08',
-  Sep: '09',
-  Oct: '10',
-  Nov: '11',
-  Dec: '12',
-};
-
-function getInitialCountdownTarget() {
-  const nextRace = CALENDAR.find(r => r.isNext) || CALENDAR.find(r => !r.isDone && !r.isCancelled) || CALENDAR[0];
-  const match = nextRace?.date.match(/^([A-Za-z]{3})\s+(\d{1,2})(?:[–-]([A-Za-z]{3})?\s?(\d{1,2}))?$/);
-  if (!match) return new Date(Date.now() + 3600000).toISOString();
-
-  const month = MONTH_TO_INDEX[match[1]];
-  const day = match[2].padStart(2, '0');
-  const year = new Date().getUTCFullYear();
-  if (!month) return new Date(Date.now() + 3600000).toISOString();
-
-  return `${year}-${month}-${day}T${DEFAULT_RACE_START_TIME}`;
-}
 
 export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const [timeLeft, setTimeLeft] = useState({ d: '00', h: '00', m: '00', s: '00' });
-  const [nextRace, setNextRace] = useState(CALENDAR.find(r => r.isNext) || CALENDAR[0]);
-  const [totalRounds, setTotalRounds] = useState(24);
-  const [countdownTarget, setCountdownTarget] = useState(() => getInitialCountdownTarget());
-  const [scheduleSource, setScheduleSource] = useState<'live' | 'fallback'>('fallback');
+  const nextRace = CALENDAR.find(r => r.isNext) || CALENDAR[0];
 
   useEffect(() => {
-    let active = true;
-    const loadUpcomingRace = async () => {
-      const raceData = await fetchUpcomingRaceData();
-      if (!active) return;
-
-      setNextRace(raceData.nextRace);
-      setTotalRounds(raceData.totalRounds);
-      setCountdownTarget(raceData.countdownTarget);
-      setScheduleSource(raceData.source);
-    };
-
-    loadUpcomingRace();
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    const target = new Date(countdownTarget).getTime();
+    // Target date from the calendar or default
+    const targetDateStr = '2026-05-18T13:00:00Z';
+    const target = new Date(targetDateStr).getTime();
     const pad = (n: number) => String(Math.max(0, n)).padStart(2, '0');
 
     const tick = () => {
@@ -84,7 +35,7 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [countdownTarget]);
+  }, []);
 
   return (
     <section className="px-6 md:px-9 max-w-7xl mx-auto">
@@ -113,13 +64,13 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
               <strong className="text-white font-medium">{nextRace.location}</strong>
             </div>
             <div className="font-sans text-[11px] md:text-sm text-white/70">
-              Round {nextRace.round} of {totalRounds} · {nextRace.laps || 'TBA'} laps · {nextRace.distance || 'TBA'}
+              Round {nextRace.round} of 24 · {nextRace.laps} laps · {nextRace.distance}
             </div>
 
             <div className="flex flex-wrap gap-6 md:gap-9 mt-6 pt-5.5 border-t border-white/15">
               {[
-                { label: 'Season', val: '2026 Championship' },
-                { label: 'Feed', val: scheduleSource === 'live' ? 'Live Schedule' : 'Fallback Data' },
+                { label: 'Lap Record', val: '1:15.484' },
+                { label: 'Pole 2025', val: theme === 'dark' ? 'M. Verstappen' : 'G. Russell' },
                 { label: 'Dates', val: nextRace.date },
               ].map((stat, i) => (
                 <div key={i} className="flex flex-col">

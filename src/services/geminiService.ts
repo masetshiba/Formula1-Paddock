@@ -22,7 +22,6 @@ export async function fetchFullLiveSync(): Promise<LiveSyncData | null> {
   if (!ai) return null;
 
   try {
-    const today = new Date().toISOString().split('T')[0];
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Perform a deep sync of the 2026 F1 Season. 
@@ -31,7 +30,7 @@ export async function fetchFullLiveSync(): Promise<LiveSyncData | null> {
       - Kimi Antonelli is at Mercedes.
       - Adrian Newey is at Aston Martin.
       - Audi has entered the sport.
-      - The current date is ${today}.
+      - The current date is April 25, 2026.
       
       Provide:
       1. Updated Driver narratives/bios for the top 5 (Antonelli, Russell, Leclerc, Norris, Hamilton).
