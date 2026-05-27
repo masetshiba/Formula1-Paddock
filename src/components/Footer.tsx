@@ -4,14 +4,12 @@
  */
 
 import { motion } from 'motion/react';
-import { Mail, Phone, Instagram, Facebook, Linkedin, Twitter, Globe, Copyright } from 'lucide-react';
+import { Mail, Phone, Instagram, Linkedin, Copyright } from 'lucide-react';
 
 export function Footer({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const socials = [
-    { icon: Instagram, url: 'https://instagram.com/panger__lkr', label: 'INSTAGRAM' },
-    { icon: Facebook, url: 'https://facebook.com/lkr.panger', label: 'FACEBOOK' },
-    { icon: Linkedin, url: 'https://linkedin.com/in/pangerlkr', label: 'LINKEDIN' },
-    { icon: Twitter, url: 'https://x.com/panger__lkr', label: 'X (TWITTER)' },
+    { icon: Instagram, url: 'https://www.instagram.com/_shi_imsong_/', label: 'INSTAGRAM' },
+    { icon: Linkedin, url: 'https://www.linkedin.com/in/masetshiba-imsong-3023771a8/', label: 'LINKEDIN' },
   ];
 
   const teamBase = theme === 'dark' ? 'Milton Keynes' : 'Brackley';
@@ -69,9 +67,9 @@ export function Footer({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
         {/* Direct Contact */}
         <motion.div variants={itemVariants} className="flex flex-col gap-4">
           <div className="font-mono text-[9px] text-ink-3 tracking-[0.2em] font-bold uppercase mb-2">Direct Link</div>
-          <a href="mailto:contact@pangerlkr.link" className="flex items-center gap-3 group/link cursor-pointer">
+          <a href="mailto:contact@mashiimsong.link" className="flex items-center gap-3 group/link cursor-pointer">
             <div className="p-2 bg-ink text-paper group-hover/link:bg-racing transition-colors duration-300 relative overflow-hidden">
-              <motion.div 
+              <motion.div
                 whileHover={{ y: ['0%', '100%'] }}
                 className="absolute inset-0 bg-white/20 pointer-events-none"
               />
@@ -79,12 +77,12 @@ export function Footer({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
             </div>
             <div className="flex flex-col">
               <span className="font-mono text-[10px] text-ink-3 font-semibold uppercase">Uplink</span>
-              <span className="text-xs font-bold text-ink group-hover/link:text-racing transition-colors tracking-tight">contact@pangerlkr.link</span>
+              <span className="text-xs font-bold text-ink group-hover/link:text-racing transition-colors tracking-tight">contact@mashiimsong.link</span>
             </div>
           </a>
-          <a href="tel:+918132872135" className="flex items-center gap-3 group/link cursor-pointer">
+          <a href="tel:+917005684553" className="flex items-center gap-3 group/link cursor-pointer">
             <div className="p-2 bg-ink text-paper group-hover/link:bg-mercedes transition-colors duration-300 relative overflow-hidden">
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.3, repeat: Infinity }}
                 className="absolute inset-0 bg-white/10 pointer-events-none"
@@ -93,7 +91,7 @@ export function Footer({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
             </div>
             <div className="flex flex-col">
               <span className="font-mono text-[10px] text-ink-3 font-semibold uppercase">Team Radio</span>
-              <span className="text-xs font-bold text-ink group-hover/link:text-mercedes transition-colors tracking-tight">+91 8132872135</span>
+              <span className="text-xs font-bold text-ink group-hover/link:text-mercedes transition-colors tracking-tight">+91 7005684553</span>
             </div>
           </a>
         </motion.div>
@@ -129,7 +127,7 @@ export function Footer({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
             />
             <div className="flex items-center gap-2 mb-2 text-ink relative z-10">
               <Copyright size={12} />
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest">Panger Lkr</span>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest">Mashi Imsong</span>
             </div>
             <div className="font-mono text-[8px] text-ink-3 tracking-widest uppercase relative z-10">
               {teamPower} · MMXXVI
@@ -150,9 +148,9 @@ export function Footer({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
         className="flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] font-mono text-ink-3 uppercase tracking-[0.18em]"
       >
         <div className="flex items-center">
-          For Pangerkumzuk · eyes only
+          For F1 Enthusiasts · Eyes Only
           <span className={`w-1 h-1 rounded-full mx-2 transition-colors duration-500 ${theme === 'dark' ? 'bg-racing' : 'bg-mercedes'}`} />
-          Full Push · {theme === 'dark' ? 'Leave them behind' : 'The best or nothing'}
+          Full Throttle · {theme === 'dark' ? 'Pushing Limits' : 'Excellence Always'}
         </div>
         <div className="flex items-center gap-2">
           <span>{teamVersion}</span>
