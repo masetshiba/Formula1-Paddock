@@ -117,7 +117,7 @@ export function Hero({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
                 transition={{ duration: 0.1, repeat: Infinity }}
                 className="relative block"
               >
-                Pangerkumzuk's
+                Masetshiba's
               </motion.span>
             </motion.span>
           </span>
