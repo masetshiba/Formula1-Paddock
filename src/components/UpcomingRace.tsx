@@ -7,15 +7,38 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import { CALENDAR } from '../constants.ts';
+import { f1Service } from '../services/f1Service.ts';
+
+interface UpcomingRaceData {
+  name: string;
+  location: string;
+  country: string;
+  date: Date;
+  circuit: string;
+}
 
 export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const [timeLeft, setTimeLeft] = useState({ d: '00', h: '00', m: '00', s: '00' });
+  const [raceData, setRaceData] = useState<UpcomingRaceData | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const nextRace = CALENDAR.find(r => r.isNext) || CALENDAR[0];
 
   useEffect(() => {
-    // Target date from the calendar or default
-    const targetDateStr = '2026-05-18T13:00:00Z';
-    const target = new Date(targetDateStr).getTime();
+    const fetchRaceData = async () => {
+      const data = await f1Service.getUpcomingRace();
+      if (data) {
+        setRaceData(data);
+      }
+      setLoading(false);
+    };
+    fetchRaceData();
+  }, []);
+
+  useEffect(() => {
+    // Use real race date if available, otherwise use default
+    const targetDate = raceData?.date || new Date('2026-05-18T13:00:00Z');
+    const target = targetDate.getTime();
     const pad = (n: number) => String(Math.max(0, n)).padStart(2, '0');
 
     const tick = () => {
@@ -35,7 +58,7 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [raceData]);
 
   return (
     <section className="px-6 md:px-9 max-w-7xl mx-auto">
@@ -53,22 +76,30 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
           <div className="flex flex-col">
             <div className="flex items-center gap-3.5 mb-4">
               <span className="font-mono text-[10px] md:text-[11px] font-semibold tracking-widest uppercase text-mercedes px-2.5 py-1.5 border border-mercedes/50 bg-mercedes/10">
-                ◆ Round {String(nextRace.round).padStart(2, '0')} · Up Next
+                ◆ {loading ? 'Loading...' : 'Up Next'}
               </span>
-              <span className="text-2xl md:text-3xl">{nextRace.flag}</span>
+              <span className="text-2xl md:text-3xl">{raceData?.country ? '🏁' : nextRace.flag}</span>
             </div>
             <h2 className="font-serif text-[clamp(42px,6vw,76px)] font-bold leading-none tracking-tight mb-4">
-              {nextRace.country} <span className="italic text-mercedes font-medium text-[0.8em]">{nextRace.circuit === 'Imola' ? 'Grand Prix' : 'Race'}</span>
+              {raceData ? raceData.country : nextRace.country} <span className="italic text-mercedes font-medium text-[0.8em]">Grand Prix</span>
             </h2>
             <div className="font-sans text-xs md:text-sm text-white/70 mb-1.5 tracking-wide">
-              <strong className="text-white font-medium">{nextRace.location}</strong>
+              <strong className="text-white font-medium">{raceData ? raceData.location : nextRace.location}</strong>
             </div>
             <div className="font-sans text-[11px] md:text-sm text-white/70">
-              Round {nextRace.round} of 24 · {nextRace.laps} laps · {nextRace.distance}
+              {raceData ? `Circuit: ${raceData.circuit}` : `Round ${nextRace.round} of 24 · ${nextRace.laps} laps · ${nextRace.distance}`}
             </div>
 
             <div className="flex flex-wrap gap-6 md:gap-9 mt-6 pt-5.5 border-t border-white/15">
-              {[
+              {raceData && [
+                { label: 'Race Date', val: raceData.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) },
+                { label: 'Location', val: raceData.location },
+              ].map((stat, i) => (
+                <div key={i} className="flex flex-col">
+                  <span className="font-mono text-[8px] md:text-[9px] tracking-widest uppercase text-white/50 mb-1.5">{stat.label}</span>
+                  <span className="font-mono text-xs md:text-sm font-medium">{stat.val}</span>
+                </div>
+              )) || [
                 { label: 'Lap Record', val: '1:15.484' },
                 { label: 'Pole 2025', val: theme === 'dark' ? 'M. Verstappen' : 'G. Russell' },
                 { label: 'Dates', val: nextRace.date },

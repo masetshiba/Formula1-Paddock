@@ -34,6 +34,34 @@ async function getLatestSessionKey() {
 }
 
 export const f1Service = {
+  async getUpcomingRace() {
+    try {
+      const response = await fetch(`${BASE_URL}/meetings?season=2026`);
+      const meetings = await response.json();
+
+      if (!meetings || meetings.length === 0) return null;
+
+      const now = new Date();
+      const upcomingMeeting = meetings.find((m: any) => {
+        const meetingDate = new Date(m.date_start);
+        return meetingDate > now;
+      });
+
+      if (!upcomingMeeting) return null;
+
+      return {
+        name: upcomingMeeting.meeting_name,
+        location: upcomingMeeting.location,
+        country: upcomingMeeting.country_name,
+        date: new Date(upcomingMeeting.date_start),
+        circuit: upcomingMeeting.circuit_short_name,
+      };
+    } catch (error) {
+      console.error('Error fetching upcoming race:', error);
+      return null;
+    }
+  },
+
   async syncLiveData() {
     const sessionKey = await getLatestSessionKey();
     if (!sessionKey) return null;
