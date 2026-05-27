@@ -106,7 +106,7 @@ export function Hero({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
                 transition={{ duration: 0.05, repeat: Infinity, delay: 0.025 }}
                 className="absolute inset-0 text-racing/30 translate-x-[4px] blur-[2px] pointer-events-none"
               >
-                Pangerkumzuk's
+             Masetshiba's
               </motion.span>
               
               <motion.span
