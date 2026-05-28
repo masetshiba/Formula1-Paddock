@@ -15,6 +15,7 @@ interface UpcomingRaceData {
   country: string;
   date: Date;
   circuit: string;
+  round?: string;
 }
 
 export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
@@ -76,7 +77,7 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
           <div className="flex flex-col">
             <div className="flex items-center gap-3.5 mb-4">
               <span className="font-mono text-[10px] md:text-[11px] font-semibold tracking-widest uppercase text-mercedes px-2.5 py-1.5 border border-mercedes/50 bg-mercedes/10">
-                ◆ {loading ? 'Loading...' : 'Up Next'}
+                ◆ {loading ? 'Fetching...' : `Round ${raceData?.round || '?'} · Up Next`}
               </span>
               <span className="text-2xl md:text-3xl">{raceData?.country ? '🏁' : nextRace.flag}</span>
             </div>
@@ -87,19 +88,20 @@ export function UpcomingRace({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
               <strong className="text-white font-medium">{raceData ? raceData.location : nextRace.location}</strong>
             </div>
             <div className="font-sans text-[11px] md:text-sm text-white/70">
-              {raceData ? `Circuit: ${raceData.circuit}` : `Round ${nextRace.round} of 24 · ${nextRace.laps} laps · ${nextRace.distance}`}
+              {raceData ? `${raceData.circuit} Circuit` : `Round ${nextRace.round} of 24 · ${nextRace.laps} laps · ${nextRace.distance}`}
             </div>
 
             <div className="flex flex-wrap gap-6 md:gap-9 mt-6 pt-5.5 border-t border-white/15">
-              {raceData && [
-                { label: 'Race Date', val: raceData.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) },
+              {raceData ? [
+                { label: 'Race Start', val: raceData.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) },
+                { label: 'Time', val: raceData.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) },
                 { label: 'Location', val: raceData.location },
               ].map((stat, i) => (
                 <div key={i} className="flex flex-col">
                   <span className="font-mono text-[8px] md:text-[9px] tracking-widest uppercase text-white/50 mb-1.5">{stat.label}</span>
                   <span className="font-mono text-xs md:text-sm font-medium">{stat.val}</span>
                 </div>
-              )) || [
+              )) : [
                 { label: 'Lap Record', val: '1:15.484' },
                 { label: 'Pole 2025', val: theme === 'dark' ? 'M. Verstappen' : 'G. Russell' },
                 { label: 'Dates', val: nextRace.date },

@@ -36,12 +36,16 @@ async function getLatestSessionKey() {
 export const f1Service = {
   async getUpcomingRace() {
     try {
-      const response = await fetch(`${BASE_URL}/meetings?season=2026`);
+      // Fetch all races for the current and next season
+      const currentYear = new Date().getFullYear();
+      const response = await fetch(`${BASE_URL}/meetings?season=${currentYear}`);
       const meetings = await response.json();
 
       if (!meetings || meetings.length === 0) return null;
 
       const now = new Date();
+
+      // Find the next race that hasn't started yet
       const upcomingMeeting = meetings.find((m: any) => {
         const meetingDate = new Date(m.date_start);
         return meetingDate > now;
@@ -49,12 +53,28 @@ export const f1Service = {
 
       if (!upcomingMeeting) return null;
 
+      // Fetch session info for more accurate details
+      let sessionInfo = null;
+      try {
+        const sessionsResponse = await fetch(`${BASE_URL}/sessions?meeting_key=${upcomingMeeting.meeting_key}`);
+        const sessions = await sessionsResponse.json();
+        if (sessions && sessions.length > 0) {
+          // Find the race session
+          sessionInfo = sessions.find((s: any) => s.session_type === 'Race');
+        }
+      } catch (e) {
+        console.error('Error fetching session info:', e);
+      }
+
+      const raceDate = sessionInfo?.date_start ? new Date(sessionInfo.date_start) : new Date(upcomingMeeting.date_start);
+
       return {
         name: upcomingMeeting.meeting_name,
         location: upcomingMeeting.location,
         country: upcomingMeeting.country_name,
-        date: new Date(upcomingMeeting.date_start),
+        date: raceDate,
         circuit: upcomingMeeting.circuit_short_name,
+        round: upcomingMeeting.meeting_official_name?.match(/\d+/)?.[0] || 'N/A',
       };
     } catch (error) {
       console.error('Error fetching upcoming race:', error);
